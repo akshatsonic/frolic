@@ -18,7 +18,108 @@ Once infrastructure is running, access these UIs:
 docker-compose up -d && mvn clean package -DskipTests && java -jar frolic-services/target/frolic-services-1.0-SNAPSHOT.jar
 ```
 
+## 🚀 Demo Options
+
+### Option 1: Interactive Demo (Recommended for Presentations!) ⭐
+
+**User-friendly with custom configuration:**
+```bash
+python3 interactive_demo.py
+```
+
+**You configure:**
+- Number of campaigns
+- Campaign durations (in minutes)
+- Games per campaign
+- Brands per game (1-5)
+- Budget per brand (min 1)
+- Uses 100 users for simulation
+- All campaigns/games start NOW
+- 2-minute wait + 2-minute simulation (4 min total)
+- Shows both wins and losses
+- Auto-simulation and budget reports
+
+**See:** [INTERACTIVE_DEMO_GUIDE.md](INTERACTIVE_DEMO_GUIDE.md)
+
+---
+
+### Option 2: Automated Demo (Pre-configured)
+
+**Full demo with 100 users & realistic gameplay:**
+
+**Prerequisites:** Python 3 with `requests` library
+```bash
+pip3 install requests
+```
+
+**Run the complete demo:**
+```bash
+./run_full_demo.sh
+```
+
+This script automatically:
+- 🧹 **Cleans up ALL existing data first** (games, campaigns, brands, users)
+- ✅ Creates 100 users, 10 brands, 20 campaigns, 100+ games
+- ✅ **All games use TIME_BASED probability** (win rate increases over time)
+- ✅ Starts games that should be active now
+- ✅ Some games end in 1-2 minutes for fast visualization
+- ✅ Simulates realistic user traffic patterns
+- ✅ Shows real-time winners and statistics
+
+**Note:** The script waits 3 seconds before cleanup - press Ctrl+C to cancel if needed.
+
+**OR run scripts individually:**
+
+```bash
+# Step 1: Setup demo data
+python3 setup_demo_data.py
+
+# Step 2: Simulate gameplay (choose from multiple modes)
+python3 simulate_gameplay.py
+```
+
+**Simulation Modes:**
+1. **Wave Simulation** - 5 waves of 20 users (realistic traffic)
+2. **Continuous** - 5 minutes with 10 concurrent users
+3. **Stress Test** - 1000 rapid concurrent plays
+4. **Quick Test** - 1 wave of 10 users (fastest demo)
+
 ## 2️⃣ Test the System (Copy & Paste)
+
+### Create User
+```bash
+curl -X POST http://localhost:8080/api/v1/admin/users \
+  -H "Content-Type: application/json" \
+  -d '{"email":"john.doe@example.com","name":"John Doe","phoneNumber":"+1234567890","active":true}'
+```
+**Save the `id` from response**
+
+### Get All Users
+```bash
+curl http://localhost:8080/api/v1/admin/users
+```
+
+### Get User by ID (Replace {userId})
+```bash
+curl http://localhost:8080/api/v1/admin/users/USER_ID_HERE
+```
+
+### Get User by Email
+```bash
+curl http://localhost:8080/api/v1/admin/users/email/john.doe@example.com
+```
+
+### Update User (Replace {userId})
+```bash
+curl -X PUT http://localhost:8080/api/v1/admin/users/USER_ID_HERE \
+  -H "Content-Type: application/json" \
+  -d '{"email":"john.doe@example.com","name":"John Doe Updated","phoneNumber":"+1234567890","active":true}'
+```
+
+### Delete User (Replace {userId})
+```bash
+curl -X DELETE http://localhost:8080/api/v1/admin/users/USER_ID_HERE
+```
 
 ### Create Brand
 ```bash
@@ -193,6 +294,9 @@ SELECT * FROM play_events ORDER BY created_at DESC LIMIT 10;
 
 | Endpoint | Method | Purpose |
 |----------|--------|---------|
+| `/api/v1/admin/users` | GET/POST | Manage users |
+| `/api/v1/admin/users/{id}` | GET/PUT/DELETE | User by ID |
+| `/api/v1/admin/users/email/{email}` | GET | User by email |
 | `/api/v1/admin/brands` | GET/POST | Manage brands |
 | `/api/v1/admin/campaigns` | GET/POST | Manage campaigns |
 | `/api/v1/admin/games` | GET/POST | Manage games |
@@ -250,6 +354,7 @@ frolic/
 ## 🎯 Success Criteria
 
 ✅ Health endpoint returns UP
+✅ Can create and manage users
 ✅ Can create brands, campaigns, games
 ✅ Game start loads budgets to Redis
 ✅ Play requests return 202 Accepted
@@ -258,6 +363,22 @@ frolic/
 
 ---
 
-**Need more details?** Check API_TESTING_GUIDE.md
+## 🤖 Automated Demo Scripts
+
+For a complete automated demo with realistic data and gameplay simulation, check out:
+
+📖 **[DEMO_SCRIPTS_README.md](DEMO_SCRIPTS_README.md)** - Comprehensive guide to demo automation scripts
+
+**Quick run:**
+```bash
+pip3 install requests
+./run_full_demo.sh
+```
+
+---
+
+**Need more details?** 
+- **API Testing**: Check [API_TESTING_GUIDE.md](API_TESTING_GUIDE.md)
+- **Demo Automation**: Check [DEMO_SCRIPTS_README.md](DEMO_SCRIPTS_README.md)
 
 **Happy Gaming! 🎮**

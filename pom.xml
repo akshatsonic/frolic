@@ -124,6 +124,45 @@
                         </annotationProcessorPaths>
                     </configuration>
                 </plugin>
+                
+                <!-- JaCoCo for code coverage -->
+                <plugin>
+                    <groupId>org.jacoco</groupId>
+                    <artifactId>jacoco-maven-plugin</artifactId>
+                    <version>0.8.11</version>
+                    <executions>
+                        <execution>
+                            <goals>
+                                <goal>prepare-agent</goal>
+                            </goals>
+                        </execution>
+                        <execution>
+                            <id>report</id>
+                            <phase>test</phase>
+                            <goals>
+                                <goal>report</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                    <configuration>
+                        <excludes>
+                            <!-- Exclude repository interfaces -->
+                            <exclude>**/repository/jpa/**</exclude>
+                            <!-- Exclude entity classes -->
+                            <exclude>**/repository/entity/**</exclude>
+                            <!-- Exclude DTOs -->
+                            <exclude>**/dto/**</exclude>
+                            <!-- Exclude enums -->
+                            <exclude>**/enums/**</exclude>
+                            <!-- Exclude constants -->
+                            <exclude>**/constant/**</exclude>
+                            <!-- Exclude configuration classes -->
+                            <exclude>**/config/**</exclude>
+                            <!-- Exclude main application class -->
+                            <exclude>**/FrolicApplication.class</exclude>
+                        </excludes>
+                    </configuration>
+                </plugin>
             </plugins>
         </pluginManagement>
     </build>

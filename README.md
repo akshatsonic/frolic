@@ -371,6 +371,63 @@ game_config:{gameId}                   # Game configuration cache
 3. Verify Kafka consumer lag
 4. Review database query performance
 
+## 🎮 Demo Scripts
+
+### Interactive Demo (Recommended!) ⭐
+
+User-friendly demo with custom configuration:
+
+```bash
+pip3 install requests
+python3 interactive_demo.py
+```
+
+**Features:**
+- Configure campaigns, durations, games, brands, and budgets interactively
+- Uses 100 users for simulation
+- All campaigns/games start immediately
+- 2-minute wait for probability stabilization
+- 2-minute simulation (regardless of campaign duration) for quick probability testing
+- Shows both winners and losers in real-time
+- Budget comparison report (initial vs final)
+- Perfect for presentations and testing
+
+**See:** [INTERACTIVE_DEMO_GUIDE.md](INTERACTIVE_DEMO_GUIDE.md)
+
+---
+
+### Automated Demo Scripts
+
+For pre-configured demos with realistic data:
+
+```bash
+# Install Python dependencies
+pip3 install requests
+
+# Run complete automated demo
+./run_full_demo.sh
+```
+
+**What it does:**
+- Creates 100 users, 10 brands, 20 campaigns, 100+ games
+- All games use TIME_BASED probability (win rate increases over time)
+- Some games end in 1-2 minutes for fast visualization
+- Simulates realistic user traffic patterns
+- Shows real-time winners and statistics
+
+**Individual scripts:**
+```bash
+python3 setup_demo_data.py      # Create demo data
+python3 simulate_gameplay.py     # Simulate users playing
+python3 check_demo_results.py    # View statistics
+```
+
+**Documentation:**
+- **[INTERACTIVE_DEMO_GUIDE.md](INTERACTIVE_DEMO_GUIDE.md)** - Interactive demo guide
+- **[QUICK_START.md](QUICK_START.md)** - Quick start guide with manual testing
+- **[DEMO_SCRIPTS_README.md](DEMO_SCRIPTS_README.md)** - Complete demo automation guide
+- **[DEMO_SCRIPTS_SUMMARY.md](DEMO_SCRIPTS_SUMMARY.md)** - Quick reference card
+
 ## License
 
 This is a demo project for educational purposes.
