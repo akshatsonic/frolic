@@ -7,7 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.Instant;
+import java.time.LocalDateTime;
 
 /**
  * Play event entity (audit log)
@@ -36,7 +36,7 @@ public class PlayEventEntity extends BaseEntity {
     private PlayStatus status;
     
     @Column(name = "timestamp", nullable = false)
-    private Instant timestamp;
+    private LocalDateTime timestamp;
     
     @Column(name = "winner", nullable = false)
     private boolean winner = false;

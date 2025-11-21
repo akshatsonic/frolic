@@ -7,7 +7,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -23,11 +23,11 @@ public class GameDto {
     private String name;
     private String campaignId;
     private GameStatus status;
-    private Instant startTime;
-    private Instant endTime;
+    private LocalDateTime startTime;
+    private LocalDateTime endTime;
     private ProbabilityType probabilityType;
     private Integer slotGranularitySeconds;
     private List<GameBrandBudgetDto> brandBudgets;
-    private Instant createdAt;
-    private Instant updatedAt;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
 }

@@ -5,7 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.Instant;
+import java.time.LocalDateTime;
 
 /**
  * DTO for play result data
@@ -23,6 +23,6 @@ public class PlayResultDto {
     private String couponId;
     private String brandId;
     private String brandName;
-    private Instant timestamp;
+    private LocalDateTime timestamp;
     private String message;
 }

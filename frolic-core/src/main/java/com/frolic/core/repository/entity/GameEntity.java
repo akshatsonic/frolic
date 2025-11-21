@@ -8,7 +8,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,10 +38,10 @@ public class GameEntity extends BaseEntity {
     private GameStatus status;
     
     @Column(name = "start_time", nullable = false)
-    private Instant startTime;
+    private LocalDateTime startTime;
     
     @Column(name = "end_time", nullable = false)
-    private Instant endTime;
+    private LocalDateTime endTime;
     
     @Enumerated(EnumType.STRING)
     @Column(name = "probability_type", nullable = false)

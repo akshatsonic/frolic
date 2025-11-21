@@ -7,7 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.Instant;
+import java.time.LocalDateTime;
 
 /**
  * Campaign entity
@@ -31,8 +31,8 @@ public class CampaignEntity extends BaseEntity {
     private CampaignStatus status;
     
     @Column(name = "start_date", nullable = false)
-    private Instant startDate;
+    private LocalDateTime startDate;
     
     @Column(name = "end_date", nullable = false)
-    private Instant endDate;
+    private LocalDateTime endDate;
 }

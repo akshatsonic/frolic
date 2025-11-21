@@ -19,7 +19,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
@@ -138,7 +138,7 @@ public class RewardAllocationService {
             .couponId(java.util.UUID.randomUUID().toString()) // Simplified - would fetch actual coupon
             .brandId(budget.getBrandId())
             .brandName("Brand-" + budget.getBrandId()) // Simplified - would fetch from DB
-            .timestamp(Instant.now())
+            .timestamp(LocalDateTime.now())
             .message("Congratulations! You won " + allocation + " coupon(s)!")
             .build();
         
@@ -167,7 +167,7 @@ public class RewardAllocationService {
             .gameId(event.getGameId())
             .userId(event.getUserId())
             .winner(false)
-            .timestamp(Instant.now())
+            .timestamp(LocalDateTime.now())
             .message("Better luck next time!")
             .build();
         

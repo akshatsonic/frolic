@@ -7,7 +7,7 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import java.time.Instant;
+import java.time.LocalDateTime;
 
 /**
  * Base entity class with common audit fields
@@ -24,18 +24,18 @@ public abstract class BaseEntity {
     
     @CreatedDate
     @Column(name = "created_at", nullable = false, updatable = false)
-    private Instant createdAt;
+    private LocalDateTime createdAt;
     
     @LastModifiedDate
     @Column(name = "updated_at", nullable = false)
-    private Instant updatedAt;
+    private LocalDateTime updatedAt;
     
     @PrePersist
     protected void onCreate() {
         if (id == null) {
             id = java.util.UUID.randomUUID().toString();
         }
-        Instant now = Instant.now();
+        LocalDateTime now = LocalDateTime.now();
         if (createdAt == null) {
             createdAt = now;
         }
@@ -44,6 +44,6 @@ public abstract class BaseEntity {
     
     @PreUpdate
     protected void onUpdate() {
-        updatedAt = Instant.now();
+        updatedAt = LocalDateTime.now();
     }
 }

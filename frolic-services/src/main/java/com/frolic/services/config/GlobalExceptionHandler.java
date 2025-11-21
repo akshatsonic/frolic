@@ -12,7 +12,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import java.time.Instant;
+import java.time.LocalDateTime;
 
 /**
  * Global exception handler for REST controllers
@@ -27,7 +27,7 @@ public class GlobalExceptionHandler {
         ErrorResponse error = new ErrorResponse(
             ex.getErrorCode(),
             ex.getMessage(),
-            Instant.now()
+            LocalDateTime.now()
         );
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
     }
@@ -38,7 +38,7 @@ public class GlobalExceptionHandler {
         ErrorResponse error = new ErrorResponse(
             ex.getErrorCode(),
             ex.getMessage(),
-            Instant.now()
+            LocalDateTime.now()
         );
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
     }
@@ -49,7 +49,7 @@ public class GlobalExceptionHandler {
         ErrorResponse error = new ErrorResponse(
             ex.getErrorCode(),
             ex.getMessage(),
-            Instant.now()
+            LocalDateTime.now()
         );
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
     }
@@ -65,7 +65,7 @@ public class GlobalExceptionHandler {
         ErrorResponse error = new ErrorResponse(
             "VALIDATION_ERROR",
             message,
-            Instant.now()
+            LocalDateTime.now()
         );
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
     }
@@ -76,7 +76,7 @@ public class GlobalExceptionHandler {
         ErrorResponse error = new ErrorResponse(
             "INTERNAL_ERROR",
             "An unexpected error occurred",
-            Instant.now()
+            LocalDateTime.now()
         );
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
     }
@@ -86,6 +86,6 @@ public class GlobalExceptionHandler {
     public static class ErrorResponse {
         private String errorCode;
         private String message;
-        private Instant timestamp;
+        private LocalDateTime timestamp;
     }
 }

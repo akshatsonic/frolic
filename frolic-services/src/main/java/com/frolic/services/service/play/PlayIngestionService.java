@@ -9,15 +9,19 @@ import com.frolic.core.common.exception.ResourceNotFoundException;
 import com.frolic.core.common.util.IdGenerator;
 import com.frolic.core.cache.store.RedisResultStore;
 import com.frolic.core.messaging.producer.PlayEventProducer;
+import com.frolic.core.common.enums.CampaignStatus;
+import com.frolic.core.repository.entity.CampaignEntity;
 import com.frolic.core.repository.entity.GameEntity;
+import com.frolic.core.repository.jpa.CampaignRepository;
 import com.frolic.core.repository.jpa.GameRepository;
+import com.frolic.services.service.admin.UserService;
 import com.frolic.services.controller.play.request.PlayRequest;
 import com.frolic.services.controller.play.response.PlayResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.time.Instant;
+import java.time.LocalDateTime;
 
 /**
  * Service for play ingestion
@@ -29,12 +33,19 @@ public class PlayIngestionService {
     
     private final PlayEventProducer playEventProducer;
     private final GameRepository gameRepository;
+    private final CampaignRepository campaignRepository;
+    private final UserService userService;
     private final RedisResultStore redisResultStore;
     
     /**
      * Submit a play request
      */
     public PlayResponse submitPlay(PlayRequest request) {
+        // Validate user exists and is active
+        if (!userService.isUserValid(request.getUserId())) {
+            throw new InvalidRequestException("User does not exist or is inactive");
+        }
+        
         // Validate game exists and is active
         GameEntity game = gameRepository.findById(request.getGameId())
             .orElseThrow(() -> new ResourceNotFoundException("Game", request.getGameId()));
@@ -43,8 +54,16 @@ public class PlayIngestionService {
             throw new InvalidRequestException("Game is not active");
         }
         
+        // Validate campaign status - if campaign is completed, games cannot accept plays
+        CampaignEntity campaign = campaignRepository.findById(game.getCampaignId())
+            .orElseThrow(() -> new ResourceNotFoundException("Campaign", game.getCampaignId()));
+        
+        if (campaign.getStatus() != CampaignStatus.ACTIVE) {
+            throw new InvalidRequestException("Campaign is inactive. No plays are allowed");
+        }
+        
         // Check if game time window is valid
-        Instant now = Instant.now();
+        LocalDateTime now = LocalDateTime.now();
         if (now.isBefore(game.getStartTime()) || now.isAfter(game.getEndTime())) {
             throw new InvalidRequestException("Game is not currently running");
         }

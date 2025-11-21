@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -26,5 +26,5 @@ public interface PlayEventRepository extends JpaRepository<PlayEventEntity, Stri
     long countWinnersByGameId(@Param("gameId") String gameId);
     
     @Query("SELECT COUNT(p) FROM PlayEventEntity p WHERE p.gameId = :gameId AND p.timestamp BETWEEN :start AND :end")
-    long countPlaysInTimeRange(@Param("gameId") String gameId, @Param("start") Instant start, @Param("end") Instant end);
+    long countPlaysInTimeRange(@Param("gameId") String gameId, @Param("start") LocalDateTime start, @Param("end") LocalDateTime end);
 }

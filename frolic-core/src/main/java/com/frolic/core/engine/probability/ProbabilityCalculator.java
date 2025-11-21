@@ -4,7 +4,7 @@ import com.frolic.core.common.util.TimeUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
-import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.Random;
 
 /**
@@ -33,7 +33,7 @@ public class ProbabilityCalculator {
      * @param slotGranularitySeconds Slot duration in seconds
      * @return Number of coupons to allocate for this play
      */
-    public int calculateAllocation(int remainingBudget, Instant startTime, Instant endTime, int slotGranularitySeconds) {
+    public int calculateAllocation(int remainingBudget, LocalDateTime startTime, LocalDateTime endTime, int slotGranularitySeconds) {
         if (remainingBudget <= 0) {
             return 0;
         }
@@ -65,7 +65,7 @@ public class ProbabilityCalculator {
     /**
      * Calculate remaining time slots until game end
      */
-    public long calculateRemainingSlots(Instant startTime, Instant endTime, int slotGranularitySeconds) {
+    public long calculateRemainingSlots(LocalDateTime startTime, LocalDateTime endTime, int slotGranularitySeconds) {
         long remainingSeconds = TimeUtils.remainingSeconds(endTime);
         
         if (remainingSeconds <= 0) {

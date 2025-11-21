@@ -6,7 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.Map;
 
 /**
@@ -22,6 +22,6 @@ public class PlayEventDto {
     private String gameId;
     private String userId;
     private PlayStatus status;
-    private Instant timestamp;
+    private LocalDateTime timestamp;
     private Map<String, Object> metadata;
 }

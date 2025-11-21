@@ -8,18 +8,18 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 
 /**
- * DTO for brand data
+ * DTO for user data
  */
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class BrandDto {
+public class UserDto {
     
     private String id;
+    private String email;
     private String name;
-    private String description;
-    private String logoUrl;
+    private String phone;
     private boolean active;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;

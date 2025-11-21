@@ -6,7 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.Instant;
+import java.time.LocalDateTime;
 
 /**
  * DTO for coupon data
@@ -23,9 +23,9 @@ public class CouponDto {
     private String brandName;
     private CouponStatus status;
     private String userId;
-    private Instant issuedAt;
-    private Instant redeemedAt;
-    private Instant expiresAt;
+    private LocalDateTime issuedAt;
+    private LocalDateTime redeemedAt;
+    private LocalDateTime expiresAt;
     private String description;
     private Double value;
 }

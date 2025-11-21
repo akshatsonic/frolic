@@ -2,9 +2,12 @@ package com.frolic.services.service.admin;
 
 import com.frolic.core.common.dto.CampaignDto;
 import com.frolic.core.common.enums.CampaignStatus;
+import com.frolic.core.common.enums.GameStatus;
 import com.frolic.core.common.exception.ResourceNotFoundException;
 import com.frolic.core.repository.entity.CampaignEntity;
+import com.frolic.core.repository.entity.GameEntity;
 import com.frolic.core.repository.jpa.CampaignRepository;
+import com.frolic.core.repository.jpa.GameRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -22,6 +25,8 @@ import java.util.stream.Collectors;
 public class CampaignService {
     
     private final CampaignRepository campaignRepository;
+    private final GameRepository gameRepository;
+    private final GameService gameService;
     
     /**
      * Get all campaigns
@@ -116,16 +121,29 @@ public class CampaignService {
     }
     
     /**
-     * End campaign
+     * End campaign - cascade to all games
      */
     @Transactional
     public CampaignDto endCampaign(String id) {
         CampaignEntity entity = campaignRepository.findById(id)
             .orElseThrow(() -> new ResourceNotFoundException("Campaign", id));
         
+        // End all active games in this campaign
+        List<GameEntity> games = gameRepository.findByCampaignId(id);
+        for (GameEntity game : games) {
+            if (game.getStatus() == GameStatus.ACTIVE) {
+                try {
+                    gameService.stopGame(game.getId());
+                    log.info("Stopped game: id={} as part of campaign completion", game.getId());
+                } catch (Exception e) {
+                    log.error("Failed to stop game: id={} during campaign completion", game.getId(), e);
+                }
+            }
+        }
+        
         entity.setStatus(CampaignStatus.ENDED);
         entity = campaignRepository.save(entity);
-        log.info("Ended campaign: id={}", id);
+        log.info("Ended campaign: id={}, all games stopped", id);
         
         return toDto(entity);
     }

@@ -7,7 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.Instant;
+import java.time.LocalDateTime;
 
 /**
  * Coupon entity
@@ -39,13 +39,13 @@ public class CouponEntity extends BaseEntity {
     private String userId;
     
     @Column(name = "issued_at")
-    private Instant issuedAt;
+    private LocalDateTime issuedAt;
     
     @Column(name = "redeemed_at")
-    private Instant redeemedAt;
+    private LocalDateTime redeemedAt;
     
     @Column(name = "expires_at")
-    private Instant expiresAt;
+    private LocalDateTime expiresAt;
     
     @Column(name = "description", columnDefinition = "TEXT")
     private String description;

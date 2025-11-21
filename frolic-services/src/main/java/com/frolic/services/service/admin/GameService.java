@@ -7,10 +7,13 @@ import com.frolic.core.common.enums.GameStatus;
 import com.frolic.core.common.enums.ProbabilityType;
 import com.frolic.core.common.exception.InvalidRequestException;
 import com.frolic.core.common.exception.ResourceNotFoundException;
+import com.frolic.core.repository.entity.CampaignEntity;
 import com.frolic.core.repository.entity.GameBrandBudgetEntity;
 import com.frolic.core.repository.entity.GameEntity;
+import com.frolic.core.repository.jpa.CampaignRepository;
 import com.frolic.core.repository.jpa.GameBrandBudgetRepository;
 import com.frolic.core.repository.jpa.GameRepository;
+import com.frolic.services.service.budget.BudgetSyncService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -28,8 +31,10 @@ import java.util.stream.Collectors;
 public class GameService {
     
     private final GameRepository gameRepository;
+    private final CampaignRepository campaignRepository;
     private final GameBrandBudgetRepository budgetRepository;
     private final RedisBudgetStore redisBudgetStore;
+    private final BudgetSyncService budgetSyncService;
     
     /**
      * Get all games
@@ -77,6 +82,18 @@ public class GameService {
             throw new InvalidRequestException("End time must be after start time");
         }
         
+        // Validate game times are within campaign date range
+        CampaignEntity campaign = campaignRepository.findById(dto.getCampaignId())
+            .orElseThrow(() -> new ResourceNotFoundException("Campaign", dto.getCampaignId()));
+        
+        if (dto.getStartTime().isBefore(campaign.getStartDate())) {
+            throw new InvalidRequestException("Game start time must be on or after campaign start date");
+        }
+        
+        if (dto.getEndTime().isAfter(campaign.getEndDate())) {
+            throw new InvalidRequestException("Game end time must be on or before campaign end date");
+        }
+        
         GameEntity entity = new GameEntity();
         entity.setName(dto.getName());
         entity.setCampaignId(dto.getCampaignId());
@@ -117,6 +134,24 @@ public class GameService {
         // Can only update draft games
         if (entity.getStatus() != GameStatus.DRAFT) {
             throw new InvalidRequestException("Can only update games in DRAFT status");
+        }
+        
+        // Validate time window
+        if (dto.getEndTime().isBefore(dto.getStartTime())) {
+            throw new InvalidRequestException("End time must be after start time");
+        }
+        
+        // Validate game times are within campaign date range
+        String campaignId=entity.getCampaignId();
+        CampaignEntity campaign = campaignRepository.findById(campaignId)
+            .orElseThrow(() -> new ResourceNotFoundException("Campaign", campaignId));
+        
+        if (dto.getStartTime().isBefore(campaign.getStartDate())) {
+            throw new InvalidRequestException("Game start time must be on or after campaign start date");
+        }
+        
+        if (dto.getEndTime().isAfter(campaign.getEndDate())) {
+            throw new InvalidRequestException("Game end time must be on or before campaign end date");
         }
         
         entity.setName(dto.getName());
@@ -175,7 +210,7 @@ public class GameService {
     }
     
     /**
-     * Stop game - cleanup and reconcile
+     * Stop game - sync budgets and cleanup
      */
     @Transactional
     public GameDto stopGame(String id) {
@@ -186,6 +221,9 @@ public class GameService {
             throw new InvalidRequestException("Can only stop active games");
         }
         
+        // Sync budgets from Redis to PostgreSQL before clearing
+        budgetSyncService.syncBudgetsFromRedisToPostgres(id);
+        
         // Clear budgets from Redis
         List<GameBrandBudgetEntity> budgets = budgetRepository.findByGameId(id);
         for (GameBrandBudgetEntity budget : budgets) {
@@ -195,7 +233,7 @@ public class GameService {
         entity.setStatus(GameStatus.ENDED);
         entity = gameRepository.save(entity);
         
-        log.info("Stopped game: id={}", id);
+        log.info("Stopped game: id={}, budgets synced to PostgreSQL", id);
         
         return toDto(entity);
     }
