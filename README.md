@@ -2,6 +2,22 @@
 
 A scalable gamification platform for campaigns, games, and probabilistic reward allocations using event-driven architecture with Java 21, Spring Boot, PostgreSQL, Redis, and Kafka.
 
+## Simulation Results
+2 campaigns
+1 game per campaign (with 2 brands serving coupons)
+1st game  -> 5 minute lifetime (total budget 4 coupons)
+2nd game  -> 50 minute lifetime (total budget 1000 coupons)
+
+> This simulation is truncated at 3 minutes
+- Since 1st game has low time it exhausts its coupons faster, hence none remains
+- But for second game, it has around 47 minutes more to go, hence exhausted only small percentage of coupons
+<img width="704" height="761" alt="image" src="https://github.com/user-attachments/assets/06b0222f-c386-4e6a-90bd-42175d18c4b8" />
+
+## Vedio for simulation
+https://github.com/user-attachments/assets/8cbb7c95-5bac-4e79-a6e3-b8ac9404f4f5
+
+
+
 ## Overview
 
 Frolic is a demo project showcasing:
@@ -69,6 +85,8 @@ curl http://localhost:8080/actuator/health
 Install Python dependencies:
 
 ```bash
+python3 -m venv venv
+source venv/bin/activate
 pip3 install requests
 pip3 install redis
 ```
