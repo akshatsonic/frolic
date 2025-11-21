@@ -1,0 +1,267 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd">
+
+    <changeSet id="1" author="frolic">
+        <comment>Create campaigns table</comment>
+        <createTable tableName="campaigns">
+            <column name="id" type="VARCHAR(36)">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="TEXT"/>
+            <column name="status" type="VARCHAR(20)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="start_date" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="end_date" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="updated_at" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="2" author="frolic">
+        <comment>Create brands table</comment>
+        <createTable tableName="brands">
+            <column name="id" type="VARCHAR(36)">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="name" type="VARCHAR(255)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="description" type="TEXT"/>
+            <column name="logo_url" type="VARCHAR(500)"/>
+            <column name="active" type="BOOLEAN">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="updated_at" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="3" author="frolic">
+        <comment>Create games table</comment>
+        <createTable tableName="games">
+            <column name="id" type="VARCHAR(36)">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="campaign_id" type="VARCHAR(36)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="status" type="VARCHAR(20)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="start_time" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="end_time" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="probability_type" type="VARCHAR(20)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="slot_granularity_seconds" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="updated_at" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <createIndex tableName="games" indexName="idx_game_campaign">
+            <column name="campaign_id"/>
+        </createIndex>
+        <createIndex tableName="games" indexName="idx_game_status">
+            <column name="status"/>
+        </createIndex>
+        <createIndex tableName="games" indexName="idx_game_times">
+            <column name="start_time"/>
+            <column name="end_time"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="4" author="frolic">
+        <comment>Create game_brand_budgets table</comment>
+        <createTable tableName="game_brand_budgets">
+            <column name="id" type="VARCHAR(36)">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="game_id" type="VARCHAR(36)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="brand_id" type="VARCHAR(36)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="total_budget" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="allocated_budget" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="remaining_budget" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="updated_at" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <createIndex tableName="game_brand_budgets" indexName="idx_gbb_game">
+            <column name="game_id"/>
+        </createIndex>
+        <createIndex tableName="game_brand_budgets" indexName="idx_gbb_brand">
+            <column name="brand_id"/>
+        </createIndex>
+        <createIndex tableName="game_brand_budgets" indexName="idx_gbb_game_brand" unique="true">
+            <column name="game_id"/>
+            <column name="brand_id"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="5" author="frolic">
+        <comment>Create users table</comment>
+        <createTable tableName="users">
+            <column name="id" type="VARCHAR(36)">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="email" type="VARCHAR(255)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="phone" type="VARCHAR(20)"/>
+            <column name="active" type="BOOLEAN">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="updated_at" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <createIndex tableName="users" indexName="idx_user_email" unique="true">
+            <column name="email"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="6" author="frolic">
+        <comment>Create coupons table</comment>
+        <createTable tableName="coupons">
+            <column name="id" type="VARCHAR(36)">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="code" type="VARCHAR(100)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="brand_id" type="VARCHAR(36)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="status" type="VARCHAR(20)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="user_id" type="VARCHAR(36)"/>
+            <column name="issued_at" type="TIMESTAMP"/>
+            <column name="redeemed_at" type="TIMESTAMP"/>
+            <column name="expires_at" type="TIMESTAMP"/>
+            <column name="description" type="TEXT"/>
+            <column name="value" type="DOUBLE"/>
+            <column name="created_at" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="updated_at" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <createIndex tableName="coupons" indexName="idx_coupon_brand">
+            <column name="brand_id"/>
+        </createIndex>
+        <createIndex tableName="coupons" indexName="idx_coupon_status">
+            <column name="status"/>
+        </createIndex>
+        <createIndex tableName="coupons" indexName="idx_coupon_user">
+            <column name="user_id"/>
+        </createIndex>
+        <createIndex tableName="coupons" indexName="idx_coupon_code" unique="true">
+            <column name="code"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="7" author="frolic">
+        <comment>Create play_events table</comment>
+        <createTable tableName="play_events">
+            <column name="id" type="VARCHAR(36)">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="game_id" type="VARCHAR(36)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="user_id" type="VARCHAR(36)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="status" type="VARCHAR(20)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="timestamp" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="winner" type="BOOLEAN">
+                <constraints nullable="false"/>
+            </column>
+            <column name="coupon_id" type="VARCHAR(36)"/>
+            <column name="brand_id" type="VARCHAR(36)"/>
+            <column name="metadata" type="TEXT"/>
+            <column name="created_at" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="updated_at" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <createIndex tableName="play_events" indexName="idx_play_game">
+            <column name="game_id"/>
+        </createIndex>
+        <createIndex tableName="play_events" indexName="idx_play_user">
+            <column name="user_id"/>
+        </createIndex>
+        <createIndex tableName="play_events" indexName="idx_play_status">
+            <column name="status"/>
+        </createIndex>
+        <createIndex tableName="play_events" indexName="idx_play_timestamp">
+            <column name="timestamp"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="8" author="frolic">
+        <comment>Add unique constraint to campaigns.name</comment>
+        <addUniqueConstraint tableName="campaigns" 
+                             columnNames="name" 
+                             constraintName="uk_campaign_name"/>
+    </changeSet>
+
+</databaseChangeLog>
